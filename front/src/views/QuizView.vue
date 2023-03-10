@@ -13,19 +13,16 @@ import Answer from "@/components/Answer.vue";
 
   <div class="parentButtons" v-if="painters.length > 0">
     <Answer
-      @click="handleClick(painter)"
+      @click="handleClick(painter, $event)"
       v-for="(painter, index) in painters"
       :key="index"
       :name="painter.name"
-      :class="{
-        correct: painter.isCorrect,
-        incorrect: painter.isCorrect === false,
-      }"
+      :class="{ correct: isCorrect }"
     />
   </div>
   <span class="italic">choissisez une réponse</span>
   <div class="nextDiv">
-    <div v-if="isCorrect === true">Bonne réponse</div>
+    <div class="correct" v-if="good">Bonne réponse</div>
     <div v-else>Mauvaise réponse</div>
     <button class="arrow" @click="nextQuestion">
       <!-- <img src="assets/arrowButton.svg" alt="" /> -->
@@ -46,7 +43,8 @@ export default {
       currentQuestion: 1,
       maxQuestions: 10,
       showNextButton: false,
-      //   isCorrect: Boolean,
+      isCorrect: null,
+      good: false,
     };
   },
 
@@ -77,36 +75,33 @@ export default {
         });
     },
 
-    handleClick(artist) {
+    handleClick(artist, event) {
       console.log(artist);
-      //   this.painting = data;
-
       const foreignKeys = this.randomPaint.fk_id;
       console.log(foreignKeys);
+
       const artistId = artist.id;
       console.log(artistId);
 
       const isCorrect = artistId === foreignKeys;
       console.log(isCorrect);
 
-      if (isCorrect === true) {
-        alert("Bonne réponse");
+      if (isCorrect) {
+        this.good = true;
+        event.target.classList.add("correct");
+
+        // event.target.classList.add("incorrect");
+        console.log("Bonne réponse");
       } else {
-        alert("Mauvaise réponse");
+        event.target.classList.add("incorrect");
+        console.log("Mauvaise réponse");
       }
-
-      //   const isCorrect = this.painting[this.random].name === artist;
-
-      //   this.painters = this.painters.map((painter) => {
-      //     if (painter === artist) {
-      //       return { painter, isCorrect };
-      //     }
-      //     return painter;
-      //   });
 
       this.showNextButton = true;
     },
     nextQuestion() {
+      this.good = false;
+
       if (this.currentQuestion < this.maxQuestions) {
         this.currentQuestion += 1;
         this.showNextButton = false;
@@ -138,11 +133,7 @@ h2 {
 }
 
 .correct {
-  background-color: green;
-}
-
-.incorrect {
-  background-color: red;
+  color: green;
 }
 
 .arrow {

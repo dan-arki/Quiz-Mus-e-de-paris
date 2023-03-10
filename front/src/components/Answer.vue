@@ -30,4 +30,10 @@ button {
   display: inline-block;
   font-size: 16px;
 }
+.correct {
+  border: solid 3px green;
+}
+.incorrect {
+  border: solid 3px red;
+}
 </style>
