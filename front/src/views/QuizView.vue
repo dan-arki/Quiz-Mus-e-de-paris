@@ -8,7 +8,7 @@ import Answer from "@/components/Answer.vue";
   <span class="quiz">Quiz ({{ currentQuestion }}/{{ maxQuestions }})</span>
   <h2>Qui a peint cette oeuvre ?</h2>
 
-  <Quiz v-if="painting[0]" :img="painting[this.random].vignetteUrl"></Quiz>
+  <Quiz v-if="painting[0]" :img="this.randomPaint.vignetteUrl"></Quiz>
   <!-- <div >On load le quiz</div> -->
 
   <div class="parentButtons" v-if="painters.length > 0">
@@ -16,7 +16,7 @@ import Answer from "@/components/Answer.vue";
       @click="handleClick(painter)"
       v-for="(painter, index) in painters"
       :key="index"
-      :name="painter"
+      :name="painter.name"
       :class="{
         correct: painter.isCorrect,
         incorrect: painter.isCorrect === false,
@@ -42,7 +42,7 @@ export default {
     return {
       painters: [],
       painting: [],
-      random: null,
+      randomPaint: null,
       currentQuestion: 1,
       maxQuestions: 10,
       showNextButton: false,
@@ -71,7 +71,8 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           this.painting = data;
-          this.random = Math.floor(Math.random() * this.painting.length);
+          const random = Math.floor(Math.random() * this.painting.length);
+          this.randomPaint = this.painting[random];
           //   console.log(this.painting);
         });
     },
@@ -80,13 +81,20 @@ export default {
       console.log(artist);
       //   this.painting = data;
 
-      const foreignKeys = this.painting.fk_id;
+      const foreignKeys = this.randomPaint.fk_id;
       console.log(foreignKeys);
-      const artistId = this.artist.id;
+      const artistId = artist.id;
       console.log(artistId);
 
       const isCorrect = artistId === foreignKeys;
       console.log(isCorrect);
+
+      if (isCorrect === true) {
+        alert("Bonne réponse");
+      } else {
+        alert("Mauvaise réponse");
+      }
+
       //   const isCorrect = this.painting[this.random].name === artist;
 
       //   this.painters = this.painters.map((painter) => {

@@ -45,7 +45,7 @@ router.get("/paintings/:id", async (req, res, next) => {
 //Tous les artistes
 router.get("/artists", async (req, res, next) => {
   const artists = [];
-  db.forEach((element) => artists.push(element.name, element.id));
+  db.forEach((element) => artists.push({ name: element.name, id: element.id }));
   res.json(artists);
 });
 
